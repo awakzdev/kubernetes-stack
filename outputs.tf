@@ -1,19 +1,26 @@
-output "region" {
-  value       = var.region
-  description = "GCloud Region"
+variable "gcp_project" {
+  description = "project id"
 }
 
-output "project_id" {
-  value       = var.project_id
-  description = "GCloud Project ID"
+variable "gcp_region" {
+  description = "region"
 }
 
-output "kubernetes_cluster_name" {
-  value       = google_container_cluster.primary.name
-  description = "GKE Cluster Name"
+provider "google" {
+  project = var.gcp_project
+  region  = var.gcp_region
 }
 
-output "kubernetes_cluster_host" {
-  value       = google_container_cluster.primary.endpoint
-  description = "GKE Cluster Host"
+# VPC
+resource "google_compute_network" "vpc" {
+  name                    = "${var.gcp_project}-vpc"
+  auto_create_subnetworks = "false"
+}
+
+# Subnet
+resource "google_compute_subnetwork" "subnet" {
+  name          = "${var.gcp_project}-subnet"
+  region        = var.gcp_region
+  network       = google_compute_network.vpc.name
+  ip_cidr_range = "10.10.0.0/24"
 }
