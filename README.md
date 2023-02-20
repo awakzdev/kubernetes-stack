@@ -15,6 +15,7 @@ This repository contains Terraform code to install a Google Kubernetes Engine (G
 - [ExternalDNS](#externaldns)
 - [Cert-Manager (Lets-encrypt)](#cert-manager)
 - [Ingress-NGINX](#ingress-nginx)
+- [Reflector](#reflector)
 
 
 ## Terraform GKE Installation
@@ -237,6 +238,27 @@ kubectl apply -f ingress.yaml
 ```
 kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges --all-namespaces
 ```
+  
+## Reflector 
+
+### Overview
+Reflector is a Kubernetes addon designed to monitor changes to resources (secrets and configmaps) and reflect changes to mirror resources in the same or other namespaces. This allows a single Cluster-issuer to be deployed and maintained across the whole cluster instead of generating an additional secret for every ingress.
+
+### Deployment using Helm
+```
+helm repo add emberstack https://emberstack.github.io/helm-charts
+helm repo update
+helm upgrade --install reflector emberstack/reflector
+```
+
+<hr>
+
+### Usage
+Annotate the source secret or configmap
+- Add `reflector.v1.k8s.emberstack.com/reflection-allowed: "true"` to the resource annotations to permit reflection to mirrors.
+- Add `reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "<list>"` to the resource annotations to permit reflection from only the list of comma separated namespaces or regular expressions. Note: If this annotation is omitted or is empty, all namespaces are allowed.
+
+For more information on the installation of reflector, visit https://github.com/emberstack/kubernetes-reflector.
 
 # License
 [Apache License 2.0](https://github.com/awakzdev/kubernetes-stack/blob/main/LICENSE)
