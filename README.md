@@ -1,4 +1,4 @@
-# Setting ExternalDNS Ingress-NGINX Cert-manager (Let's-Encrypt)
+# Setting a secured ingress and automating its DNS records - externaldns / ingress / letsencrypt
 
 This repository contains Terraform code to install a Google Kubernetes Engine (GKE) cluster, with additional information on the installations process of externaldns and ingress-nginx secured by cert-manager (letsencrypt).
 
